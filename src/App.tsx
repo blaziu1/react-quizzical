@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { nanoid } from 'nanoid';
 import './App.css'
 import data from './data';
@@ -16,11 +16,12 @@ function App() {
     return array;
 }
 
-  const usefulData = data.map(elem => {
-    const answers = elem.incorrect_answers.map(ans => {
+function usefulData2(data: any) {
+  return data.map((elem: { incorrect_answers: any[]; correct_answer: any; question: any; }) => {
+    const answers = elem.incorrect_answers.map((ans: any) => {
       return {
         answerId: nanoid(),
-        answer: ans,
+        answer: atob(ans),
         isCorrect: false,
         isActive: false,
         isVerified: false,
@@ -28,40 +29,49 @@ function App() {
     })
     answers.push({
       answerId: nanoid(),
-      answer: elem.correct_answer,
+      answer: atob(elem.correct_answer),
       isCorrect: true,
       isActive: false,
       isVerified: false,
     })
     return {
       questionId: nanoid(),
-      question: elem.question,
+      question: atob(elem.question),
       answers: shuffleArray(answers)
     }
   })
+}
 
-  const [result, setResult] = useState(usefulData)
+  const [result, setResult] = useState(usefulData2(data))
 
+  useEffect(() => {
+    if(!isFinished)
+    fetch("https://opentdb.com/api.php?amount=5&encode=base64")
+      .then(res => res.json())
+      .then(data => {
+        setResult(usefulData2(data.results));
+      })
+  }, [isFinished])
 
   function startQuiz() {
     setIsStarted(true);
   }
 
   function verifyAnswers() {
-    setResult(prevResult => prevResult.map(question => {
-      const answers = question.answers.map(answer => {
+    setResult((prevResult: any[]) => prevResult.map(question => {
+      const answers = question.answers.map((answer: any) => {
         return {...answer, isVerified: true}
       });
       return {...question, answers}
     }))
-    setIsFinished(true)
+    setIsFinished(isFin => !isFin)
   }
 
   function toggleAnswer(questionId: string, answerId: string, isVerified: boolean) {
     if(!isVerified) {
-      setResult(prevData => prevData.map(res => {
+      setResult((prevData: any[]) => prevData.map(res => {
         if(res.questionId === questionId) {
-          const answers = res.answers.map(ans => {
+          const answers = res.answers.map((ans: { answerId: string; }) => {
             return ans.answerId === answerId ? {...ans, isActive: true} : {...ans, isActive: false}
           })
           return {...res, answers: answers};
@@ -78,7 +88,7 @@ function App() {
     paddingBottom: "20px",
   }
 
-  const questions = result.map(elem => {
+  const questions = result.map((elem) => {
     return (
       <div key={elem.questionId} style={styles}>
         <h2>{elem.question}</h2>
