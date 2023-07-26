@@ -1,4 +1,4 @@
-export interface apiQuestion {
+export interface IApiQuestion {
     category: string,
     type: string,
     difficulty: string,
@@ -7,7 +7,7 @@ export interface apiQuestion {
     incorrect_answers: string[]
   }
 
-export interface quizAnswer {
+export interface IQuizAnswer {
     answerId: string,
     answer: string,
     isCorrect: boolean,
@@ -15,8 +15,8 @@ export interface quizAnswer {
     isVerified: boolean,
   }
 
-export interface quizQuestion {
+export interface IQuizQuestion {
     questionId: string,
     question: string,
-    answers: quizAnswer[],
+    answers: IQuizAnswer[],
   }

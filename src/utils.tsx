@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { apiQuestion, quizQuestion } from "./interfaces";
+import { IApiQuestion, IQuizQuestion } from "./interfaces";
 
 export function shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -9,7 +9,7 @@ export function shuffleArray(array: any[]) {
     return array;
 }
 
-export function prepareQuestions(data: apiQuestion[]): quizQuestion[] {
+export function prepareQuestions(data: IApiQuestion[]): IQuizQuestion[] {
     return data.map((elem: { incorrect_answers: string[]; correct_answer: string; question: string; }) => {
       const answers = elem.incorrect_answers.map((ans: string) => {
         return {
