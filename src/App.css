@@ -38,3 +38,9 @@ h1 {
   float: left;
   text-align: center;
 }
+
+.question {
+  overflow: hidden;
+  border-bottom: 2px solid #e6e6e6;
+  padding-bottom: 20px;
+}
