@@ -3,22 +3,32 @@ import './App.css'
 import data from './data';
 import Answer from './Answer';
 import { prepareQuestions } from './utils';
-import { IQuizAnswer, IQuizQuestion } from './interfaces';
+import { IQuizAnswer, IQuizQuestion } from './interfaces/interfaces';
+import { InfinitySpin } from 'react-loader-spinner';
+import { Category } from './enums/Category.enum';
 
 function App() {
   const [isStarted, setIsStarted] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [quiz, setQuiz] = useState(prepareQuestions(data))
-  const opentdbURL = 'https://opentdb.com/api.php?amount=5&category=31&encode=base64'
+  const opentdbURL = `https://opentdb.com/api.php?amount=5&category=${Category.Computers}&encode=base64&difficulty=easy`;
 
   useEffect(() => {
-    if(!isFinished)
-    fetch(opentdbURL)
-      .then(res => res.json())
-      .then(data => {
-        setQuiz(prepareQuestions(data.results));
-      })
+    if(!isFinished) {
+      setIsLoading(true)
+      fetch(opentdbURL)
+        .then(res => res.json())
+        .then(data => {
+          setQuiz(prepareQuestions(data.results));
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+          setIsLoading(false);
+        });
+    }
   }, [isFinished])
 
   function startQuiz() {
@@ -56,7 +66,13 @@ function App() {
         <h2>{elem.question}</h2>
         {
           elem.answers.map((answer: IQuizAnswer) => (
-              <Answer key={answer.answerId} value={answer.answer} isActive={answer.isActive} isVerified={answer.isVerified} isCorrect={answer.isCorrect} toggle={() => toggleAnswer(elem.questionId, answer.answerId, answer.isVerified)} />
+              <Answer 
+                key={answer.answerId}
+                value={answer.answer}
+                isActive={answer.isActive}
+                isVerified={answer.isVerified} 
+                isCorrect={answer.isCorrect} 
+                toggle={() => toggleAnswer(elem.questionId, answer.answerId, answer.isVerified)} />
             ))
         }
       </div>
@@ -68,8 +84,14 @@ function App() {
     {
       isStarted ?
       <>
-        {questions}
-        <button className="start--button" onClick={verifyAnswers}>{isFinished ? "Play again" : "Check answers"}</button>
+        { isLoading ? 
+            <InfinitySpin width='200' color='#4fa94d' /> 
+            : 
+            <> 
+              {questions} 
+              <button className="start--button" onClick={verifyAnswers}>{isFinished ? "Play again" : "Check answers"}</button>
+            </>
+        } 
       </>
      : 
       <>
