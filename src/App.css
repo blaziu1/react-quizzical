@@ -1,0 +1,40 @@
+body {
+  background-color: #f2f7fc
+}
+
+h1 {
+  color: #0d0c37;
+  margin-bottom: 10px;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.start--button {
+  background-color: #445190;
+  color: white;
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+  width: 200px;
+  border-radius: 15px;
+}
+
+.start--button:hover {
+  background-color: #293057;
+}
+
+.answer {
+  border: 1px solid #293057;
+  border-radius: 15px;
+  min-width: 120px;
+  font-size: 12px;
+  padding: 0.4em 1.0em;
+  margin-left: 20px;
+  cursor: pointer;
+  float: left;
+  text-align: center;
+}
